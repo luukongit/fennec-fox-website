@@ -177,3 +177,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+playButton.addEventListener('click', () => {
+    if (audioElement.paused) {
+        audioElement.play();
+    } else {
+        audioElement.pause();
+    }
+});
