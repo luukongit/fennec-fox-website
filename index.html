@@ -3,103 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Audio Player</title>
+  <title>Fennec Fox Audio Player</title>
   <style>
-    /* Optional: Grundlegende Styles für Buttons, etc. */
-    #playButton {
-      cursor: pointer;
-      padding: 0.5em 1em;
-      margin-right: 1em;
-    }
-    #downloadLink {
-      /* Platziert den Download-Button weiter rechts */
-      margin-left: auto;  
-      text-decoration: none;
-      padding: 0.5em 1em;
-    }
-    /* Container für Player-Elemente */
-    .player-container {
-      display: flex;
-      align-items: center;
-      width: 100%;              /* Nimmt gesamte Breite ein, damit margin-left:auto wirkt */
-      max-width: 600px;         /* Optional: maximale Breite des Players */
-      margin: 0 auto;           /* Zentriert den Player in der Seite */
-      padding: 1em;
-    }
-    .player-container img {
-      margin-right: 1em;
-      max-height: 100px;        /* Beispielgröße fürs Bild (Cover) */
-    }
-    /* Verhindert die Standard-Audio-Kontrollen und Sichtbarkeit */
-    audio {
-      display: none;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
+    .player-container { width: 90%; max-width: 500px; margin: 20px auto; background: #fff;
+                         border-radius: 8px; overflow: hidden;
+                         box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; }
+    .player-container img { width: 100%; display: block; }
+    .controls { display: flex; justify-content: center; align-items: center;
+                gap: 10px; padding: 10px; }
+    #play-pause-button { padding: 8px 16px; font-size: 16px; border: none;
+                         border-radius: 4px; cursor: pointer; background: #007BFF; color: #fff; }
+    #play-pause-button:hover { background: #0056b3; }
+    .time-display { font-family: monospace; font-size: 14px; color: #333; }
+    #download-btn { position: absolute; top: 10px; right: 10px; text-decoration: none;
+                    font-size: 14px; padding: 6px 10px; border-radius: 4px;
+                    background: #007BFF; color: #fff; }
+    #download-btn:hover { background: #0056b3; }
+    audio { display: none; }
   </style>
 </head>
 <body>
-
-  <!-- Player-Bereich -->
   <div class="player-container">
-    <!-- Album-Cover oder Bild -->
-    <img src="cover.jpg" alt="Cover" id="coverImage" />
-
-    <!-- Play/Pause Button -->
-    <button id="playButton">Play</button>
-
-    <!-- Zeit-Anzeige: aktueller Zeitpunkt / Gesamtdauer -->
-    <span id="timeDisplay">0:00</span> / <span id="durationDisplay">0:00</span>
-
-    <!-- Download-Link, nun rechts positioniert -->
-    <a id="downloadLink" href="audiofile.mp3" download>Download</a>
+    <img src="fennec_fox.jpg" alt="Bild eines Fennek-Fuchses">
+    <div class="controls">
+      <button id="play-pause-button">Play</button>
+      <span class="time-display">
+        <span id="current-time">0:00</span> / 
+        <span id="total-time">0:00</span>
+      </span>
+    </div>
+    <a id="download-btn" href="Audio.mp3" download>Download</a>
+    <audio id="audio" src="Audio.mp3">Ihr Browser unterstützt das Audio-Element nicht.</audio>
   </div>
-
-  <!-- Audio-Element (ohne Autoplay, ohne Controls) -->
-  <audio id="audioElement" src="audiofile.mp3" preload="metadata"></audio>
-
   <script>
-    // Elemente referenzieren
-    const audio = document.getElementById('audioElement');
-    const playBtn = document.getElementById('playButton');
-    const timeDisplay = document.getElementById('timeDisplay');
-    const durationDisplay = document.getElementById('durationDisplay');
-
-    // Hilfsfunktion: Sekunden in M:SS-Format umwandeln
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return mins + ':' + (secs < 10 ? '0' + secs : secs);
-    }
-
-    // Event: Metadaten des Audios geladen (Dauer verfügbar)
-    audio.addEventListener('loadedmetadata', () => {
-      durationDisplay.textContent = formatTime(audio.duration);
-    });
-
-    // Event: Audio-Zeitupdate (aktuelle Wiedergabezeit anzeigen)
-    audio.addEventListener('timeupdate', () => {
-      timeDisplay.textContent = formatTime(audio.currentTime);
-    });
-
-    // Event: Wiedergabe zu Ende -> Button zurücksetzen und Zeit zurücksetzen
-    audio.addEventListener('ended', () => {
-      playBtn.textContent = 'Play';
-      timeDisplay.textContent = formatTime(0);
-      audio.currentTime = 0;  // Optional: Zurück an den Anfang springen
-    });
-
-    // Klick auf Play-Button: Audio abspielen oder pausieren
-    playBtn.addEventListener('click', () => {
-      if (audio.paused || audio.ended) {
-        // *Starten* der Wiedergabe (Benutzerinteraktion, daher erlaubt)
-        audio.play();
-        playBtn.textContent = 'Pause';  // Button-Beschriftung ändern
-      } else {
-        // *Pausieren* der Wiedergabe
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('play-pause-button');
+    const currentTimeEl = document.getElementById('current-time');
+    const totalTimeEl = document.getElementById('total-time');
+    let isPlaying = false;
+    playPauseBtn.addEventListener('click', () => {
+      if (isPlaying) {
         audio.pause();
-        playBtn.textContent = 'Play';
+        playPauseBtn.textContent = 'Play';
+      } else {
+        audio.play();
+        playPauseBtn.textContent = 'Pause';
       }
+      isPlaying = !isPlaying;
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      const duration = audio.duration;
+      const minutes = Math.floor(duration / 60);
+      const seconds = Math.floor(duration % 60);
+      totalTimeEl.textContent = minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+      currentTimeEl.textContent = '0:00';
+    });
+    audio.addEventListener('timeupdate', () => {
+      const currentTime = audio.currentTime;
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = Math.floor(currentTime % 60);
+      currentTimeEl.textContent = minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+    });
+    audio.addEventListener('ended', () => {
+      isPlaying = false;
+      playPauseBtn.textContent = 'Play';
     });
   </script>
-
 </body>
 </html>
