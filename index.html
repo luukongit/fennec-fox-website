@@ -139,15 +139,41 @@
   </div>
   <div class="player">
     <!-- Audio-Element (ohne sichtbare Standard-Steuerung) -->
-    <audio id="audio-element" src="audio/fennec.mp3" preload="none"></audio>
+    <audio id="audio-element" src="fennec.mp3" preload="none"></audio>
     <button class="play-button" aria-label="Play"></button>
     <div class="progress-container">
       <span class="current-time">0:00</span>
       <div class="progress-bar">
         <div class="progress-fill"></div>
       </div>
-      <span class="duration">0:30</span>
+      <span id="audio-duration">--:--</span>
     </div>
   </div>
 </body>
 </html>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var audio = document.getElementById("audio-element");
+    var durationLabel = document.getElementById("audio-duration");
+    
+    audio.onloadedmetadata = function () {
+        var minutes = Math.floor(audio.duration / 60);
+        var seconds = Math.floor(audio.duration % 60);
+        durationLabel.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    };
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var audio = document.getElementById("audio-element");
+    var playButton = document.getElementById("play-button");
+    
+    playButton.addEventListener("click", function () {
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+    });
+});
+</script>
