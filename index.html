@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fennec Fox Audio</title>
+  <!-- Eingebettetes CSS für das Styling -->
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #fff; /* Seitenhintergrund weiß */
+    }
+    .audio-player {
+      max-width: 500px;
+      width: 90%;
+      margin: 20px auto;
+      /* Der übergeordnete Container für den Player, zentriert und responsiv */
+    }
+    .top-section {
+      background-color: beige;
+      text-align: center;
+      padding: 20px;
+    }
+    .bottom-section {
+      background-color: #fff;
+      padding: 20px;
+    }
+    .top-section img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .bottom-section h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+    .bottom-section .subtitle {
+      margin: 5px 0 15px;
+      color: #666;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .controls button,
+    .controls a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .controls button:focus,
+    .controls a:focus {
+      outline: 2px solid #aaa;
+      outline-offset: 2px;
+    }
+    /* Größen und Farbe der Icons */
+    #playpause svg {
+      width: 40px;
+      height: 40px;
+      fill: #333;
+    }
+    #download svg,
+    #share svg {
+      width: 24px;
+      height: 24px;
+      fill: #333;
+    }
+    /* Fortschrittsbalken (Slider) */
+    #seekbar {
+      flex: 1;
+      accent-color: #333;  /* Farbe des geladenen Bereichs und des Griffs */
+      outline: none;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="audio-player">
+    <div class="top-section">
+      <img src="fennec_fox.jpg" alt="Fennec Fox">
+    </div>
+    <div class="bottom-section">
+      <h1>Fennec Fox</h1>
+      <p class="subtitle">I tell something about myself</p>
+      <div class="controls">
+        <button id="playpause" aria-label="Wiedergabe/Pause">
+          <!-- Play-Icon (wird beim Abspielen ausgeblendet) -->
+          <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+          </svg>
+          <!-- Pause-Icon (standardmäßig versteckt) -->
+          <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5"/>
+          </svg>
+        </button>
+        <input type="range" id="seekbar" value="0" min="0" step="0.1">
+        <a id="download" href="audio.mp3" download aria-label="Audio herunterladen">
+          <!-- Download-Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+          </svg>
+        </a>
+        <button id="share" aria-label="Seite teilen">
+          <!-- Teilen-Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Audio-Element (ohne sichtbare Controls) -->
+      <audio id="audio" src="audio.mp3" hidden></audio>
+    </div>
+  </div>
+
+  <!-- Eingebettetes JavaScript für die Funktionalität -->
+  <script>
+    (function() {
+      var audio = document.getElementById('audio');
+      var playBtn = document.getElementById('playpause');
+      var playIcon = document.getElementById('play-icon');
+      var pauseIcon = document.getElementById('pause-icon');
+      var seekBar = document.getElementById('seekbar');
+      var shareBtn = document.getElementById('share');
+
+      // Dauer des Audios laden und Slider-Maximalwert setzen
+      audio.addEventListener('loadedmetadata', function() {
+        seekBar.max = audio.duration;
+      });
+      // Fortschrittsanzeige aktualisieren, während Audio spielt
+      audio.addEventListener('timeupdate', function() {
+        seekBar.value = audio.currentTime;
+      });
+      // Play/Pause-Button steuern
+      playBtn.addEventListener('click', function() {
+        if (audio.paused || audio.ended) {
+          audio.play();
+          playIcon.classList.add('hidden');
+          pauseIcon.classList.remove('hidden');
+        } else {
+          audio.pause();
+          playIcon.classList.remove('hidden');
+          pauseIcon.classList.add('hidden');
+        }
+      });
+      // Wenn das Audio endet, Button zurück auf "Play" setzen und Fortschritt zurücksetzen
+      audio.addEventListener('ended', function() {
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+        seekBar.value = 0;
+      });
+      // Spulen über den Slider
+      seekBar.addEventListener('input', function() {
+        audio.currentTime = seekBar.value;
+      });
+      // Share-Button: Seiten-URL in die Zwischenablage kopieren
+      shareBtn.addEventListener('click', function() {
+        var pageUrl = window.location.href;
+        navigator.clipboard.writeText(pageUrl).then(function() {
+          alert('Seiten-URL in die Zwischenablage kopiert.');
+        }).catch(function(err) {
+          console.error('Share failed:', err);
+        });
+      });
+      // Download-Button benötigt kein zusätzliches Script (Anchor mit download-Attribut)
+    })();
+  </script>
+</body>
+</html>
