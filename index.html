@@ -1,232 +1,102 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fennec Fox Audio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      color: #333;
-      background: #ffffff;
-    }
-    .header {
-      background: #efc384; /* oberer Hintergrund: beige */
-    }
-    .header-content {
-      position: relative;
-      max-width: 500px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 2rem 1rem 3rem;
-    }
-    .header-content .icons {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-    }
-    .header-content .icons a {
-      text-decoration: none;
-      color: #333;
-      display: inline-block;
-    }
-    .header-content .icons a + a {
-      margin-left: 1rem;
-    }
-    .header img {
-      max-width: 80%;
-      height: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .header h1 {
-      margin: 1rem 0 0.5rem;
-      font-size: 1.8rem;
-    }
-    .header .subtitle {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #555;
-    }
-    .player {
-      background: #ffffff; /* unterer Hintergrund: weiß */
-      padding: 2rem 1rem;
-    }
-    .play-button {
-      display: block;
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 1.5rem;
-      background: #c65454; /* individuelle Wiedergabetaste in rötlichem Farbton */
-      border: none;
-      border-radius: 50%;
-      outline: none;
-      cursor: pointer;
-      position: relative;
-    }
-    /* Play-Symbol (Dreieck) als pseudoelement innerhalb der Play-Taste */
-    .play-button:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-style: solid;
-      border-width: 12px 0 12px 20px;
-      border-color: transparent transparent transparent #ffffff;
-    }
-    .progress-container {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-    .progress-container .current-time,
-    .progress-container .duration {
-      font-size: 0.9rem;
-    }
-    .progress-container .current-time {
-      flex: 0 0 auto;
-    }
-    .progress-container .duration {
-      flex: 0 0 auto;
-    }
-    .progress-bar {
-      flex: 1 1 auto;
-      height: 6px;
-      background: #ccc;
-      border-radius: 3px;
-      margin: 0 0.5rem;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress-fill {
-      background: #c65454;
-      height: 100%;
-      width: 0%;
-      /* Bei Wiedergabe kann die Breite prozentual angepasst werden */
-    }
-    /* Responsive Design: Begrenzung der Breite auf größeren Bildschirmen */
-    @media (min-width: 768px) {
-      .player {
-        max-width: 500px;
-        margin: 0 auto;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="header-content">
-      <div class="icons">
-        <a href="#" aria-label="Download">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-          </svg>
-        </a>
-        <a href="#" aria-label="Share">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
-            <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
-          </svg>
-        </a>
-      </div>
-      <img src="fennec_fox.jpg" alt="Fennec Fox">
-      <h1>Fennec Fox</h1>
-      <p class="subtitle">I tell something about myself</p>
-    </div>
-  </div>
-  <div class="player">
-    <!-- Audio-Element (ohne sichtbare Standard-Steuerung) -->
-    <audio id="audio-element" src="fennec.mp3" preload="none"></audio>
-    <button class="play-button" aria-label="Play"></button>
-    <div class="progress-container">
-      <span class="current-time">0:00</span>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
-      </div>
-      <span id="audio-duration">--:--</span>
-    </div>
-  </div>
-</body>
-</html>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    var audio = document.getElementById("audio-element");
-    var durationLabel = document.getElementById("audio-duration");
-    
-    audio.onloadedmetadata = function () {
-        var minutes = Math.floor(audio.duration / 60);
-        var seconds = Math.floor(audio.duration % 60);
-        durationLabel.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-    };
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    var audio = document.getElementById("audio-element");
-    var playButton = document.getElementById("play-button");
-    
-    playButton.addEventListener("click", function () {
-        if (audio.paused) {
-            audio.play();
-        } else {
-            audio.pause();
-        }
-    });
-});
-</script>
-playButton.addEventListener('click', () => {
-    if (audioElement.paused) {
-        audioElement.play();
-    } else {
-        audioElement.pause();
-    }
-});
-<!DOCTYPE html>
-<html lang="de">
-<head>
   <meta charset="UTF-8" />
-  <title>Audio-Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio Player</title>
   <style>
-    /* Optional: einfache Styles für Button und Anzeige */
-    #playBtn { margin-right: 10px; }
-    #durationDisplay { font-weight: bold; }
+    /* Optional: Grundlegende Styles für Buttons, etc. */
+    #playButton {
+      cursor: pointer;
+      padding: 0.5em 1em;
+      margin-right: 1em;
+    }
+    #downloadLink {
+      /* Platziert den Download-Button weiter rechts */
+      margin-left: auto;  
+      text-decoration: none;
+      padding: 0.5em 1em;
+    }
+    /* Container für Player-Elemente */
+    .player-container {
+      display: flex;
+      align-items: center;
+      width: 100%;              /* Nimmt gesamte Breite ein, damit margin-left:auto wirkt */
+      max-width: 600px;         /* Optional: maximale Breite des Players */
+      margin: 0 auto;           /* Zentriert den Player in der Seite */
+      padding: 1em;
+    }
+    .player-container img {
+      margin-right: 1em;
+      max-height: 100px;        /* Beispielgröße fürs Bild (Cover) */
+    }
+    /* Verhindert die Standard-Audio-Kontrollen und Sichtbarkeit */
+    audio {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Audio-Element mit preload für Meta-Daten -->
-  <audio id="audioPlayer" src="audio.mp3" preload="metadata"></audio>
+  <!-- Player-Bereich -->
+  <div class="player-container">
+    <!-- Album-Cover oder Bild -->
+    <img src="cover.jpg" alt="Cover" id="coverImage" />
 
-  <!-- Play/Pause Button -->
-  <button id="playBtn">Play</button>
+    <!-- Play/Pause Button -->
+    <button id="playButton">Play</button>
 
-  <!-- Dauer-Anzeige -->
-  <span>Dauer: </span><span id="durationDisplay">0:00</span>
+    <!-- Zeit-Anzeige: aktueller Zeitpunkt / Gesamtdauer -->
+    <span id="timeDisplay">0:00</span> / <span id="durationDisplay">0:00</span>
+
+    <!-- Download-Link, nun rechts positioniert -->
+    <a id="downloadLink" href="audiofile.mp3" download>Download</a>
+  </div>
+
+  <!-- Audio-Element (ohne Autoplay, ohne Controls) -->
+  <audio id="audioElement" src="audiofile.mp3" preload="metadata"></audio>
 
   <script>
-    const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
+    // Elemente referenzieren
+    const audio = document.getElementById('audioElement');
+    const playBtn = document.getElementById('playButton');
+    const timeDisplay = document.getElementById('timeDisplay');
     const durationDisplay = document.getElementById('durationDisplay');
 
-    // Sobald Metadaten geladen sind, Dauer im Format M:SS anzeigen
+    // Hilfsfunktion: Sekunden in M:SS-Format umwandeln
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return mins + ':' + (secs < 10 ? '0' + secs : secs);
+    }
+
+    // Event: Metadaten des Audios geladen (Dauer verfügbar)
     audio.addEventListener('loadedmetadata', () => {
-      const durationSec = audio.duration;
-      const minutes = Math.floor(durationSec / 60);
-      const seconds = Math.floor(durationSec % 60).toString().padStart(2, '0');
-      durationDisplay.textContent = ${minutes}:${seconds};  
+      durationDisplay.textContent = formatTime(audio.duration);
     });
 
-    // Play/Pause bei Button-Klick toggeln
+    // Event: Audio-Zeitupdate (aktuelle Wiedergabezeit anzeigen)
+    audio.addEventListener('timeupdate', () => {
+      timeDisplay.textContent = formatTime(audio.currentTime);
+    });
+
+    // Event: Wiedergabe zu Ende -> Button zurücksetzen und Zeit zurücksetzen
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = 'Play';
+      timeDisplay.textContent = formatTime(0);
+      audio.currentTime = 0;  // Optional: Zurück an den Anfang springen
+    });
+
+    // Klick auf Play-Button: Audio abspielen oder pausieren
     playBtn.addEventListener('click', () => {
-      if (audio.paused) {
+      if (audio.paused || audio.ended) {
+        // *Starten* der Wiedergabe (Benutzerinteraktion, daher erlaubt)
         audio.play();
-        playBtn.textContent = 'Pause';   // Button-Text zu "Pause" ändern
+        playBtn.textContent = 'Pause';  // Button-Beschriftung ändern
       } else {
+        // *Pausieren* der Wiedergabe
         audio.pause();
-        playBtn.textContent = 'Play';    // Button-Text zurück zu "Play"
+        playBtn.textContent = 'Play';
       }
     });
   </script>
