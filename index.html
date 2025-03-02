@@ -184,3 +184,52 @@ playButton.addEventListener('click', () => {
         audioElement.pause();
     }
 });
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Audio-Player</title>
+  <style>
+    /* Optional: einfache Styles für Button und Anzeige */
+    #playBtn { margin-right: 10px; }
+    #durationDisplay { font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Audio-Element mit preload für Meta-Daten -->
+  <audio id="audioPlayer" src="audio.mp3" preload="metadata"></audio>
+
+  <!-- Play/Pause Button -->
+  <button id="playBtn">Play</button>
+
+  <!-- Dauer-Anzeige -->
+  <span>Dauer: </span><span id="durationDisplay">0:00</span>
+
+  <script>
+    const audio = document.getElementById('audioPlayer');
+    const playBtn = document.getElementById('playBtn');
+    const durationDisplay = document.getElementById('durationDisplay');
+
+    // Sobald Metadaten geladen sind, Dauer im Format M:SS anzeigen
+    audio.addEventListener('loadedmetadata', () => {
+      const durationSec = audio.duration;
+      const minutes = Math.floor(durationSec / 60);
+      const seconds = Math.floor(durationSec % 60).toString().padStart(2, '0');
+      durationDisplay.textContent = ${minutes}:${seconds};  
+    });
+
+    // Play/Pause bei Button-Klick toggeln
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = 'Pause';   // Button-Text zu "Pause" ändern
+      } else {
+        audio.pause();
+        playBtn.textContent = 'Play';    // Button-Text zurück zu "Play"
+      }
+    });
+  </script>
+
+</body>
+</html>
